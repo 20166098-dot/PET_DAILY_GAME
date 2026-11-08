@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>日常習慣拍照打卡與追蹤器</title>
+    <style>
+        /* 升級：繽紛柔和現代風 CSS，零外部 CDN 依賴，手機完美顯示 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #fef2f2 50%, #faf5ff 100%);
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 30px;
+        }
+
+        /* 頂欄 Header */
+        header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 14px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        .header-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .brand-title {
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-sub {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Nav Tabs */
+        .nav-tabs {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: center;
+            padding: 0 8px;
+        }
+
+        .nav-tabs-container {
+            max-width: 600px;
+            width: 100%;
+            display: flex;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            color: #d97706;
+            border-bottom-color: #d97706;
+            background-color: #fffbeb;
+        }
+
+        main {
+            max-width: 600px;
+            width: 100%;
+            margin: 16px auto 0 auto;
+            padding: 0 14px;
+            flex: 1;
+        }
+
+        /* 卡片 Style */
+        .card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header-gradient {
+            height: 6px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #f59e0b, #ec4899, #6366f1);
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #334155;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 星期選單選卡 */
+        .day-planner-tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 14px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .day-planner-btn {
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .day-planner-btn.active {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border-color: #d97706;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+        }
+
+        /* 表單與按鈕 */
+        .add-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .input-time {
+            width: 110px;
+            padding: 12px 8px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            font-size: 13px;
+            outline: none;
+            background-color: #f8fafc;
+            text-align: center;
+        }
+
+        .input-time:focus {
+            border-color: #f59e0b;
+            background-color: #ffffff;
+        }
+
+        .input-text {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            font-size: 14px;
+            outline: none;
+            background-color: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        .input-text:focus {
+            border-color: #f59e0b;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 0 18px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        /* 任務卡片 */
+        .task-item {
+            background: #ffffff;
+            border: 1.5px solid #f1f5f9;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            transition: all 0.3s;
+        }
+
+        .task-item.completed {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-color: #86efac;
+        }
+
+        .task-main {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background-color: #e2e8f0;
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        .task-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .task-time-range {
+            display: inline-block;
+            background-color: #fef3c7;
+            color: #b45309;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-right: 6px;
+        }
+
+        .task-item.completed .task-time-range {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+
+        .task-item.completed .task-name {
+            text-decoration: line-through;
+            color: #166534;
+        }
+
+        /* 升級：功課對錯格仔快捷按鈕列 */
+        .check-grid-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(203, 213, 225, 0.8);
+        }
+
+        .btn-check-grid {
+            flex: 1;
+            padding: 10px 8px;
+            border-radius: 12px;
+            border: 2px solid;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .btn-check-grid:active {
+            transform: scale(0.96);
+        }
+
+        .btn-check-yes {
+            background-color: #f0fdf4;
+            border-color: #4ade80;
+            color: #15803d;
+        }
+
+        .btn-check-no {
+            background-color: #fef2f2;
+            border-color: #fca5a5;
+            color: #b91c1c;
+        }
+
+        .btn-view {
+            background-color: #ffffff;
+            color: #d97706;
+            border: 1px solid #fde68a;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-del {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 14px;
+        }
+
+        /* 週日報告 Banner */
+        .sunday-banner {
+            background: linear-gradient(135deg, #ffedd5 0%, #fee2e2 100%);
+            border: 2px solid #fdba74;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .sunday-banner-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #c2410c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sunday-banner-desc {
+            font-size: 12px;
+            color: #9a3412;
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        /* 直方圖條柱 */
+        .chart-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 170px;
+            padding-top: 20px;
+        }
+
+        .chart-bar-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .chart-bar-bg {
+            width: 22px;
+            background-color: #f1f5f9;
+            border-radius: 8px 8px 0 0;
+            height: 110px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+
+        .chart-bar-fill {
+            width: 100%;
+            background: linear-gradient(0deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 8px 8px 0 0;
+            transition: height 0.5s ease;
+        }
+
+        .chart-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        .chart-val {
+            font-size: 10px;
+            font-weight: 800;
+            color: #d97706;
+            margin-bottom: 4px;
+        }
+
+        /* 歷史相片牆 */
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .history-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+
+        .history-img-wrap {
+            width: 100%;
+            height: 110px;
+            background-color: #f8fafc;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 6px;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+        }
+
+        .history-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 彈出相片 Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 50;
+        }
+
+        .modal.hidden { display: none; }
+
+        .modal-body {
+            background-color: #ffffff;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 100%;
+            padding: 18px;
+        }
+
+        .modal-img {
+            width: 100%;
+            max-height: 55vh;
+            object-fit: contain;
+            border-radius: 12px;
+            background-color: #000;
+            margin-top: 10px;
+        }
+
+        /* 寵物系統樣式 */
+        .pet-card {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 2px solid #fde68a;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.1);
+            position: relative;
+        }
+        .pet-display-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 8px 0;
+        }
+        .pet-avatar {
+            font-size: 55px;
+            line-height: 1;
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+        .subpet-avatar {
+            font-size: 32px;
+            line-height: 1;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px dashed #f59e0b;
+            border-radius: 50%;
+            padding: 6px;
+            transition: transform 0.3s;
+        }
+        .pet-avatar.bounce, .subpet-avatar.bounce {
+            animation: petBounce 1s infinite alternate;
+        }
+        @keyframes petBounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+        .pet-status-bar {
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 8px auto;
+            max-width: 200px;
+        }
+        .pet-status-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+        /* 提醒通知 Banner */
+        .alert-banner {
+            background: #fef2f2;
+            border: 1.5px solid #fca5a5;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 14px;
+            margin-bottom: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: pulseAlert 2s infinite;
+        }
+        @keyframes pulseAlert {
+            0%, 100% { border-color: #fca5a5; }
+            50% { border-color: #ef4444; }
+        }
+        .check-type-selector {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .check-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .check-btn.selected-check {
+            background: #dcfce7;
+            border-color: #22c55e;
+            color: #15803d;
+        }
+        .check-btn.selected-cross {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <span style="font-size:22px;">🐣</span>
+                </div>
+                <div>
+                    <div class="brand-title">雞仔功課手冊打卡</div>
+                    <div class="brand-sub">時間提醒 & 功課格仔對錯認證</div>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <div id="todayDateStr" style="font-size: 13px; font-weight: 800; color: #475569;">--</div>
+                <div id="todayDayOfWeek" style="font-size: 11px; font-weight: 700; color: #d97706;">--</div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-tabs">
+        <div class="nav-tabs-container">
+            <button id="tabToday" class="tab-btn active" onclick="switchView('today')">📌 今日打卡</button>
+            <button id="tabPlanner" class="tab-btn" onclick="switchView('planner')">🗓️ 下週任務規劃</button>
+            <button id="tabReport" class="tab-btn" onclick="switchView('report')">📊 週日報告與統計</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- 即時提醒動態通知區域 -->
+        <div id="notificationArea"></div>
+
+        <!-- 視圖 1: 今日打卡 -->
+        <div id="viewToday">
+            <!-- 🐣 超可愛雞仔寵物卡片 -->
+            <div class="pet-card">
+                <div style="font-size: 13px; font-weight: 800; color: #b45309; margin-bottom: 4px;">🐣 咕咕雞習慣陪伴手冊</div>
+                <div class="pet-display-wrap">
+                    <span id="petAvatar" class="pet-avatar bounce">🐣</span>
+                    <span id="subPetAvatar" class="subpet-avatar bounce">🐥</span>
+                </div>
+                <div class="pet-status-bar">
+                    <div id="petHappinessFill" class="pet-status-fill" style="width: 100%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-top: 4px;">
+                    <span id="petStatusText" style="font-weight: 700; color: #b45309;">超可愛雞仔非常開心！</span>
+                    <span id="petHappinessPercent" style="font-weight: 800; color: #d97706;">開心度: 100%</span>
+                </div>
+            </div>
+
+            <!-- 週日提醒 Banner -->
+            <div id="sundayNotice" class="sunday-banner" style="display: none;">
+                <div class="sunday-banner-title">
+                    <span>🎉 星期日！本週總結與規劃日</span>
+                </div>
+                <div class="sunday-banner-desc">
+                    今天會生成你過去一週的打卡成績！請前往 <b>「🗓️ 下週任務規劃」</b> 設定下一週（星期一至六）要完成的任務與時間段！
+                </div>
+            </div>
+
+            <!-- 今日任務列表 -->
+            <div class="card">
+                <div class="card-header-gradient"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div class="card-title" style="margin: 0;">
+                        <span>📷 今日功課與手冊打卡對錯格仔</span>
+                    </div>
+                    <span id="todayProgressText" style="font-size:12px; font-weight:800; color:#d97706;">0 / 0</span>
+                </div>
+
+                <div id="todayTaskList">
+                    <!-- JS 動態生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 視圖 2: 每週任務規劃 (規劃週一到週六) -->
+        <div id="viewPlanner" style="display: none;">
+            <div class="card">
+                <div class="card-header-gradient"></div>
+                <div class="card-title">🗓️ 安排每週各天要做的任務與時間</div>
+                
+                <!-- 星期切換標籤 -->
+                <div class="day-planner-tabs">
+                    <button class="day-planner-btn active" onclick="selectPlanDay(1, this)">星期一</button>
+                    <button class="day-planner-btn" onclick="selectPlanDay(2, this)">星期二</button>
+                    <button class="day-planner-btn" onclick="selectPlanDay(3, this)">星期三</button>
+                    <button class="day-planner-btn" onclick="selectPlanDay(4, this)">星期四</button>
+                    <button class="day-planner-btn" onclick="selectPlanDay(5, this)">星期五</button>
+                    <button class="day-planner-btn" onclick="selectPlanDay(6, this)">星期六</button>
+                </div>
+
+                <!-- 新增規劃任務表單 (含時間段) -->
+                <form class="add-form" onsubmit="addPlannedTask(event)">
+                    <div style="display: flex; gap: 6px; width: 100%;">
+                        <input type="time" id="plannerStartTime" class="input-time" value="08:00" required>
+                        <span style="align-self: center; font-size: 12px; font-weight: bold; color: #64748b;">至</span>
+                        <input type="time" id="plannerEndTime" class="input-time" value="09:00" required>
+                    </div>
+                    <div style="display: flex; gap: 8px; width: 100%;">
+                        <input type="text" id="plannerInput" class="input-text" placeholder="輸入事項（如：做功課、讀書...）" required>
+                        <button type="submit" class="btn-primary">新增</button>
+                    </div>
+                </form>
+
+                <div id="plannerTaskList" style="margin-top: 14px;">
+                    <!-- JS 動態渲染目前選擇星期的任務 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 視圖 3: 週日報告與本週統計 -->
+        <div id="viewReport" style="display: none;">
+
+            <!-- 本週統計 Overview -->
+            <div class="card">
+                <div class="card-header-gradient"></div>
+                <div class="card-title">📊 本週完成進度統計</div>
+                <div id="chartBars" class="chart-container">
+                    <!-- 直方圖 -->
+                </div>
+            </div>
+
+            <!-- 歷史相片牆與結算 -->
+            <div class="card">
+                <div class="card-header-gradient"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="card-title" style="margin:0;">📸 選擇日期查看打卡照片</span>
+                    <input type="date" id="historyDate" class="input-text" style="padding: 6px; font-size: 12px; width: auto;" onchange="renderHistory()">
+                </div>
+                <div id="historySummary" style="font-size: 12px; color: #64748b;">--</div>
+
+                <div id="historyGrid" class="history-grid">
+                    <!-- 相片牆 -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- 隱藏的手機相機 Input -->
+    <input type="file" id="cameraFileInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImageCaptured(event)">
+
+    <!-- 圖片彈出 Modal -->
+    <div id="imgModal" class="modal hidden" onclick="closeModal()">
+        <div class="modal-body" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span id="modalTitle" style="font-weight: 800; font-size: 15px; color:#1e293b;">打卡相片</span>
+                <button onclick="closeModal()" style="border:none; background:none; font-size: 20px; cursor:pointer;">✕</button>
+            </div>
+            <img id="modalImage" src="" class="modal-img" alt="打卡相片">
+            <div id="modalTime" style="font-size: 12px; color: #64748b; text-align: right; margin-top: 8px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 本地儲存 KEY (更新版本避免被舊壞數據影響)
+        const KEY_WEEKLY_PLAN = 'weekly_plan_v5_stable'; 
+        const KEY_LOGS = 'habits_logs_v5_stable';         
+        const KEY_PET_DATA = 'pet_data_v5_stable';        
+
+        // 預設排程（僅在用戶歷史完全為空時初始化一次）
+        let weeklyPlan = {
+            1: [
+                { startTime: '08:00', endTime: '09:00', name: '做中文功課與手冊打卡' },
+                { startTime: '19:00', endTime: '20:00', name: '溫習英文單字' }
+            ],
+            2: [
+                { startTime: '08:00', endTime: '09:00', name: '閱讀書籍 20 頁' },
+                { startTime: '20:00', endTime: '21:00', name: '做數學練習題' }
+            ],
+            3: [
+                { startTime: '07:30', endTime: '08:30', name: '晨跑 / 運動 30 分鐘' },
+                { startTime: '21:30', endTime: '22:00', name: '整理手冊與房間' }
+            ],
+            4: [
+                { startTime: '08:00', endTime: '08:30', name: '常識科功課打卡' },
+                { startTime: '19:30', endTime: '20:30', name: '做體育運動' }
+            ],
+            5: [
+                { startTime: '12:30', endTime: '13:30', name: '健康午餐與功課紀錄' },
+                { startTime: '19:00', endTime: '20:00', name: '影相紀錄功課格仔' }
+            ],
+            6: [
+                { startTime: '10:00', endTime: '12:00', name: '戶外散步 / 課外閱讀' },
+                { startTime: '15:00', endTime: '17:00', name: '週末複習手冊' }
+            ]
+        };
+
+        let logs = {};
+        let currentSelectedPlanDay = 1; 
+        let activeTaskId = null;        
+        let pendingCheckType = 'check'; // 'check' (有功課打剔) 或 'cross' (冇功課打杈)
+        let notifiedTasks = new Set();  
+
+        let petData = {
+            revivalStreak: 0, 
+            dead: false
+        };
+
+        const dayNames = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+
+        window.onload = function() {
+            const now = new Date();
+            const todayStr = getTodayStr();
+            const dayOfWeek = now.getDay(); 
+
+            document.getElementById('todayDateStr').innerText = todayStr;
+            document.getElementById('todayDayOfWeek').innerText = dayNames[dayOfWeek];
+            document.getElementById('historyDate').value = todayStr;
+
+            loadData();
+            initTodayLogs();
+            updatePetStatus();
+            renderTodayView();
+
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+
+            setInterval(checkTaskReminders, 30000);
+            checkTaskReminders();
+        };
+
+        function getTodayStr() {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const dateStr = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${dateStr}`;
+        }
+
+        // 徹底修復：載入數據防重置機制
+        function loadData() {
+            try {
+                const savedPlan = localStorage.getItem(KEY_WEEKLY_PLAN);
+                if (savedPlan) {
+                    weeklyPlan = JSON.parse(savedPlan);
+                } else {
+                    saveData(); // 第一次開啟時寫入預設值
+                }
+
+                const savedLogs = localStorage.getItem(KEY_LOGS);
+                if (savedLogs) logs = JSON.parse(savedLogs);
+
+                const savedPet = localStorage.getItem(KEY_PET_DATA);
+                if (savedPet) petData = JSON.parse(savedPet);
+            } catch (e) {
+                console.error("載入數據出錯", e);
+            }
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem(KEY_WEEKLY_PLAN, JSON.stringify(weeklyPlan));
+                localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
+                localStorage.setItem(KEY_PET_DATA, JSON.stringify(petData));
+            } catch (e) {
+                console.error("保存數據出錯", e);
+            }
+        }
+
+        // 徹底修復：今日任務根據當天 Plan 動態合併，避免覆蓋已設定任務
+        function initTodayLogs() {
+            const todayStr = getTodayStr();
+            const dayOfWeek = new Date().getDay(); 
+            const todayPlanTasks = weeklyPlan[dayOfWeek] || [];
+
+            if (!logs[todayStr]) {
+                logs[todayStr] = [];
+            }
+
+            // 同步週規劃與今日 Logs：確保新增的規劃任務會出現，刪除的任務會移除
+            const currentLogs = logs[todayStr];
+            const updatedLogs = [];
+
+            todayPlanTasks.forEach((pTask, index) => {
+                const existing = currentLogs.find(l => l.name === pTask.name && l.startTime === pTask.startTime);
+                if (existing) {
+                    updatedLogs.push(existing);
+                } else {
+                    updatedLogs.push({
+                        id: `task_${Date.now()}_${index}`,
+                        name: pTask.name,
+                        startTime: pTask.startTime,
+                        endTime: pTask.endTime,
+                        done: false,
+                        photo: null,
+                        time: null,
+                        checkType: 'check'
+                    });
+                }
+            });
+
+            logs[todayStr] = updatedLogs;
+            saveData();
+        }
+
+        // 今日打卡渲染 (全新的直觀對錯格仔按鈕)
+        function renderTodayView() {
+            const todayStr = getTodayStr();
+            const dayOfWeek = new Date().getDay();
+            const container = document.getElementById('todayTaskList');
+            const sundayNotice = document.getElementById('sundayNotice');
+
+            if (dayOfWeek === 0) {
+                if (sundayNotice) sundayNotice.style.display = 'block';
+            } else {
+                if (sundayNotice) sundayNotice.style.display = 'none';
+            }
+
+            const todayTasks = logs[todayStr] || [];
+            let doneCount = 0;
+
+            if (todayTasks.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; color:#94a3b8; padding:30px 10px; font-size:13px;">
+                        ${dayOfWeek === 0 ? '今天是星期日休息與總結日！請前往「下週任務規劃」安排下星期任務。' : '今天尚未安排任務，可以到「下週任務規劃」進行設定。'}
+                    </div>
+                `;
+            } else {
+                container.innerHTML = todayTasks.map(item => {
+                    if (item.done) doneCount++;
+                    const timeRangeStr = item.startTime && item.endTime ? `${item.startTime} - ${item.endTime}` : '';
+                    const checkText = item.checkType === 'cross' ? '✖️ 冇功課 (影手冊作證)' : '✔️ 有功課 (影功課相片)';
+
+                    return `
+                        <div class="task-item ${item.done ? 'completed' : ''}">
+                            <div class="task-main">
+                                <div class="status-badge" style="background:${item.done ? (item.checkType === 'cross' ? '#ef4444' : '#22c55e') : '#e2e8f0'}; color:#ffffff;">
+                                    ${item.done ? (item.checkType === 'cross' ? '✖' : '✓') : '○'}
+                                </div>
+                                <div style="flex:1;">
+                                    <div>
+                                        ${timeRangeStr ? `<span class="task-time-range">⏰ ${timeRangeStr}</span>` : ''}
+                                        <span class="task-name">${escapeHtml(item.name)}</span>
+                                    </div>
+                                    <div style="font-size:11px; color:${item.done ? '#166534' : '#64748b'}; margin-top:4px; font-weight:700;">
+                                        ${item.done ? `已打卡：${checkText} (${item.time})` : '請點擊下方格仔選擇並拍照打卡：'}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            ${item.done ? `
+                                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #cbd5e1; padding-top:8px;">
+                                    <button class="btn-view" onclick="showModal('${escapeHtml(item.name)}', '${item.photo}', '${item.time}', '${item.checkType}')">🔍 檢視證明相片</button>
+                                    <button style="background:none; border:none; color:#dc2626; font-size:12px; font-weight:bold; cursor:pointer;" onclick="resetTask('${item.id}')">🔄 重拍</button>
+                                </div>
+                            ` : `
+                                <div class="check-grid-actions">
+                                    <button class="btn-check-grid btn-check-yes" onclick="quickCheckAndCam('${item.id}', 'check')">
+                                        <span style="font-size:18px;">✔️ 按剔</span>
+                                        <span style="font-size:10px;">有功課 (影功課相)</span>
+                                    </button>
+                                    <button class="btn-check-grid btn-check-no" onclick="quickCheckAndCam('${item.id}', 'cross')">
+                                        <span style="font-size:18px;">✖️ 按杈</span>
+                                        <span style="font-size:10px;">冇功課 (影手冊作證)</span>
+                                    </button>
+                                </div>
+                            `}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('todayProgressText').innerText = `${doneCount} / ${todayTasks.length}`;
+        }
+
+        // 點擊【打剔】或【打杈】直接啟動相機/相簿上傳
+        function quickCheckAndCam(id, type) {
+            activeTaskId = id;
+            pendingCheckType = type;
+            document.getElementById('cameraFileInput').click();
+        }
+
+        // 徹底修復：新增任務時即時同步保存至 LocalStorage
+        function addPlannedTask(e) {
+            e.preventDefault();
+            const input = document.getElementById('plannerInput');
+            const startTimeInput = document.getElementById('plannerStartTime');
+            const endTimeInput = document.getElementById('plannerEndTime');
+
+            const text = input.value.trim();
+            const startTime = startTimeInput.value;
+            const endTime = endTimeInput.value;
+
+            if (!text) return;
+
+            if (!weeklyPlan[currentSelectedPlanDay]) {
+                weeklyPlan[currentSelectedPlanDay] = [];
+            }
+
+            weeklyPlan[currentSelectedPlanDay].push({
+                startTime: startTime,
+                endTime: endTime,
+                name: text
+            });
+
+            saveData(); // 保存到 localStorage
+            input.value = '';
+            renderPlannerTasks();
+
+            const todayDay = new Date().getDay();
+            if (todayDay === currentSelectedPlanDay) {
+                initTodayLogs();
+                renderTodayView();
+            }
+        }
+
+        // 徹底修復：刪除任務時即時同步數據
+        function deletePlannedTask(index) {
+            if (weeklyPlan[currentSelectedPlanDay]) {
+                weeklyPlan[currentSelectedPlanDay].splice(index, 1);
+                saveData(); // 保存到 localStorage
+                renderPlannerTasks();
+
+                const todayDay = new Date().getDay();
+                if (todayDay === currentSelectedPlanDay) {
+                    initTodayLogs();
+                    renderTodayView();
+                }
+            }
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem(KEY_WEEKLY_PLAN, JSON.stringify(weeklyPlan));
+                localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
+                localStorage.setItem(KEY_PET_DATA, JSON.stringify(petData));
+            } catch (e) {
+                console.error("保存數據出錯", e);
+            }
+        }
+
+        function initTodayLogs() {
+            const todayStr = getTodayStr();
+            const dayOfWeek = new Date().getDay(); 
+
+            if (!logs[todayStr]) {
+                const todayPlanTasks = weeklyPlan[dayOfWeek] || [];
+                logs[todayStr] = todayPlanTasks.map((t, index) => ({
+                    id: `task_${Date.now()}_${index}`,
+                    name: t.name,
+                    startTime: t.startTime,
+                    endTime: t.endTime,
+                    done: false,
+                    photo: null,
+                    time: null,
+                    checkType: 'check'
+                }));
+                saveData();
+            }
+        }
+
+        function getCompletedCountForDate(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const dateStr = String(d.getDate()).padStart(2, '0');
+            const dateKey = `${y}-${m}-${dateStr}`;
+            
+            const dayLogs = logs[dateKey] || [];
+            return dayLogs.filter(item => item.done).length;
+        }
+
+        // 更新雞仔寵物狀態
+        function updatePetStatus() {
+            const today = new Date();
+            const todayDone = getCompletedCountForDate(today);
+
+            const yesterday = new Date();
+            yesterday.setDate(today.getDate() - 1);
+            const yesterdayDone = getCompletedCountForDate(yesterday);
+
+            const dayBeforeYesterday = new Date();
+            dayBeforeYesterday.setDate(today.getDate() - 2);
+            const dayBeforeDone = getCompletedCountForDate(dayBeforeYesterday);
+
+            let consecutiveZeroDays = 0;
+            if (yesterdayDone === 0) consecutiveZeroDays++;
+            if (dayBeforeDone === 0) consecutiveZeroDays++;
+
+            if (consecutiveZeroDays >= 2 && todayDone === 0) {
+                petData.dead = true;
+            }
+
+            if (petData.dead) {
+                if (todayDone >= 1 && yesterdayDone >= 1) {
+                    petData.dead = false;
+                    petData.revivalStreak = 0;
+                }
+            }
+
+            let happiness = 100;
+            let avatar = '🐣';
+            let subAvatar = '🐥';
+            let statusText = '超可愛雞仔非常開心！咕咕咕！';
+            let isBounce = true;
+
+            if (petData.dead) {
+                happiness = 0;
+                avatar = '🪦';
+                subAvatar = '👻';
+                const progress = todayDone >= 1 ? 1 : 0;
+                statusText = `雞仔已死亡 😭 (需要連續 2 天打卡復活，目前: ${progress}/2 天)`;
+                isBounce = false;
+            } else {
+                if (todayDone >= 2) {
+                    happiness = 100;
+                    avatar = '🐣';
+                    subAvatar = '🐥';
+                    statusText = '100% 非常開心！(已完成 2+ 個功課手冊任務)';
+                } else if (todayDone === 1) {
+                    happiness = 50;
+                    avatar = '🐥';
+                    subAvatar = '🥚';
+                    statusText = '50% 輕微不開心 (只完成 1 個任務，雞仔扁嘴)';
+                    isBounce = false;
+                } else {
+                    happiness = 0;
+                    avatar = '🐔';
+                    subAvatar = '🥚';
+                    statusText = '0% 不開心！未完成任務影相！';
+                    isBounce = false;
+                }
+            }
+
+            const petAvatarEl = document.getElementById('petAvatar');
+            const subPetAvatarEl = document.getElementById('subPetAvatar');
+            const statusTextEl = document.getElementById('petStatusText');
+            const happinessFillEl = document.getElementById('petHappinessFill');
+            const happinessPercentEl = document.getElementById('petHappinessPercent');
+
+            if (petAvatarEl) petAvatarEl.innerText = avatar;
+            if (subPetAvatarEl) subPetAvatarEl.innerText = subAvatar;
+
+            if (petAvatarEl && subPetAvatarEl) {
+                if (isBounce) {
+                    petAvatarEl.classList.add('bounce');
+                    subPetAvatarEl.classList.add('bounce');
+                } else {
+                    petAvatarEl.classList.remove('bounce');
+                    subPetAvatarEl.classList.remove('bounce');
+                }
+            }
+
+            if (statusTextEl) statusTextEl.innerText = statusText;
+            if (happinessFillEl) happinessFillEl.style.width = `${happiness}%`;
+            if (happinessPercentEl) happinessPercentEl.innerText = `開心度: ${happiness}%`;
+
+            saveData();
+        }
+
+        // ⏰ 時間提醒邏輯
+        function checkTaskReminders() {
+            const now = new Date();
+            const currentHM = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            const todayStr = getTodayStr();
+            const todayTasks = logs[todayStr] || [];
+
+            const notifArea = document.getElementById('notificationArea');
+            let alertsHtml = '';
+
+            todayTasks.forEach(task => {
+                if (!task.startTime || !task.endTime) return;
+
+                if (currentHM >= task.startTime && currentHM <= task.endTime && !task.done) {
+                    const notifyKey = `${task.id}_start_${currentHM}`;
+                    alertsHtml += `
+                        <div class="alert-banner" style="background:#fef3c7; border-color:#f59e0b; color:#b45309;">
+                            <span>⏰ 任務已開始：<b>${escapeHtml(task.name)}</b> (${task.startTime} - ${task.endTime})，請準備拍照功課手冊！</span>
+                        </div>
+                    `;
+                    if (!notifiedTasks.has(notifyKey)) {
+                        sendPushNotification(`⏰ 任務開始啦！`, `該做 [${task.name}] 囉！請拍照手冊打卡！`);
+                        notifiedTasks.add(notifyKey);
+                    }
+                }
+
+                if (currentHM > task.endTime && !task.done) {
+                    alertsHtml += `
+                        <div class="alert-banner">
+                            <span>⚠️ 警告：你未完成任務 [<b>${escapeHtml(task.name)}</b>]！超可愛雞仔很不開心！請盡快拍照手冊！</span>
+                        </div>
+                    `;
+                    const overdueKey = `${task.id}_overdue_${todayStr}`;
+                    if (!notifiedTasks.has(overdueKey)) {
+                        sendPushNotification(`⚠️ 未完成任務提醒`, `你未完成任務 [${task.name}]！快影相給雞仔看！`);
+                        notifiedTasks.add(overdueKey);
+                    }
+                }
+            });
+
+            if (notifArea) notifArea.innerHTML = alertsHtml;
+        }
+
+        function sendPushNotification(title, body) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, { body: body, icon: '🐣' });
+            }
+        }
+
+        // 今日打卡渲染
+        function renderTodayView() {
+            const todayStr = getTodayStr();
+            const dayOfWeek = new Date().getDay();
+            const container = document.getElementById('todayTaskList');
+            const sundayNotice = document.getElementById('sundayNotice');
+
+            if (dayOfWeek === 0) {
+                if (sundayNotice) sundayNotice.style.display = 'block';
+            } else {
+                if (sundayNotice) sundayNotice.style.display = 'none';
+            }
+
+            const todayTasks = logs[todayStr] || [];
+            let doneCount = 0;
+
+            if (todayTasks.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; color:#94a3b8; padding:30px 10px; font-size:13px;">
+                        ${dayOfWeek === 0 ? '今天是星期日休息與總結日！請前往「下週任務規劃」安排下星期任務。' : '今天尚未安排任務，可以到「下週任務規劃」進行設定。'}
+                    </div>
+                `;
+            } else {
+                container.innerHTML = todayTasks.map(item => {
+                    if (item.done) doneCount++;
+                    const timeRangeStr = item.startTime && item.endTime ? `${item.startTime} - ${item.endTime}` : '';
+                    const checkMark = item.checkType === 'cross' ? '✖️ 非今日交' : '✔️ 今日要交';
+                    return `
+                        <div class="task-item ${item.done ? 'completed' : ''}">
+                            <div class="task-main">
+                                <div class="status-badge" style="background:${item.done ? (item.checkType === 'cross' ? '#ef4444' : '#22c55e') : '#e2e8f0'}; color:#ffffff;">
+                                    ${item.done ? (item.checkType === 'cross' ? '✖' : '✓') : '○'}
+                                </div>
+                                <div style="flex:1;">
+                                    <div>
+                                        ${timeRangeStr ? `<span class="task-time-range">⏰ ${timeRangeStr}</span>` : ''}
+                                        <span class="task-name">${escapeHtml(item.name)}</span>
+                                    </div>
+                                    <div style="font-size:11px; color:${item.done ? '#166534' : '#64748b'}; margin-top:4px;">
+                                        ${item.done ? `已拍手冊打卡 (${checkMark}) - ${item.time}` : '未拍照手冊'}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="task-actions" style="flex-direction:column; align-items:stretch; gap:6px;">
+                                ${item.done ? `
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <button class="btn-view" onclick="showModal('${escapeHtml(item.name)}', '${item.photo}', '${item.time}', '${item.checkType}')">檢視手冊相片</button>
+                                        <button style="background:none; border:none; color:#dc2626; font-size:12px; cursor:pointer;" onclick="resetTask('${item.id}')">重拍</button>
+                                    </div>
+                                ` : `
+                                    <div class="check-type-selector">
+                                        <button type="button" class="check-btn selected-check" id="btnCheck_${item.id}" onclick="setCheckType('${item.id}', 'check')">✔️ 今日要交 (打剔)</button>
+                                        <button type="button" class="check-btn" id="btnCross_${item.id}" onclick="setCheckType('${item.id}', 'cross')">✖️ 非今日交 (打杈)</button>
+                                    </div>
+                                    <button class="btn-cam" style="width:100%; justify-content:center;" onclick="triggerCamera('${item.id}')">
+                                        📷 影手冊功課格仔打卡
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('todayProgressText').innerText = `${doneCount} / ${todayTasks.length}`;
+        }
+
+        function setCheckType(id, type) {
+            const btnCheck = document.getElementById(`btnCheck_${id}`);
+            const btnCross = document.getElementById(`btnCross_${id}`);
+            if (btnCheck && btnCross) {
+                if (type === 'check') {
+                    btnCheck.className = 'check-btn selected-check';
+                    btnCross.className = 'check-btn';
+                } else {
+                    btnCheck.className = 'check-btn';
+                    btnCross.className = 'check-btn selected-cross';
+                }
+            }
+            pendingCheckType = type;
+        }
+
+        function triggerCamera(id) {
+            activeTaskId = id;
+            document.getElementById('cameraFileInput').click();
+        }
+
+        function handleImageCaptured(e) {
+            const file = e.target.files[0];
+            if (!file || !activeTaskId) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const base64 = evt.target.result;
+                const todayStr = getTodayStr();
+                const timeStr = new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' });
+
+                const target = logs[todayStr].find(item => item.id === activeTaskId);
+                if (target) {
+                    target.done = true;
+                    target.photo = base64;
+                    target.time = timeStr;
+                    target.checkType = pendingCheckType || 'check';
+                    saveData();
+                    updatePetStatus();
+                    renderTodayView();
+                }
+
+                e.target.value = '';
+                activeTaskId = null;
+                pendingCheckType = 'check';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetTask(id) {
+            const todayStr = getTodayStr();
+            const target = logs[todayStr].find(item => item.id === id);
+            if (target) {
+                target.done = false;
+                target.photo = null;
+                target.time = null;
+                saveData();
+                updatePetStatus();
+                renderTodayView();
+            }
+        }
+
+        function selectPlanDay(dayNum, btn) {
+            currentSelectedPlanDay = dayNum;
+            document.querySelectorAll('.day-planner-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderPlannerTasks();
+        }
+
+        function renderPlannerTasks() {
+            const container = document.getElementById('plannerTaskList');
+            const tasks = weeklyPlan[currentSelectedPlanDay] || [];
+
+            tasks.sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+
+            if (tasks.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:20px; font-size:13px;">${dayNames[currentSelectedPlanDay]} 尚未新增任務</div>`;
+                return;
+            }
+
+            container.innerHTML = tasks.map((t, idx) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px; margin-bottom:8px;">
+                    <div>
+                        <span class="task-time-range">⏰ ${t.startTime} - ${t.endTime}</span>
+                        <span style="font-size:14px; font-weight:700; color:#334155;">${escapeHtml(t.name)}</span>
+                    </div>
+                    <button class="btn-del" onclick="deletePlannedTask(${idx})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function addPlannedTask(e) {
+            e.preventDefault();
+            const input = document.getElementById('plannerInput');
+            const startTimeInput = document.getElementById('plannerStartTime');
+            const endTimeInput = document.getElementById('plannerEndTime');
+
+            const text = input.value.trim();
+            const startTime = startTimeInput.value;
+            const endTime = endTimeInput.value;
+
+            if (!text) return;
+
+            if (!weeklyPlan[currentSelectedPlanDay]) {
+                weeklyPlan[currentSelectedPlanDay] = [];
+            }
+
+            weeklyPlan[currentSelectedPlanDay].push({
+                startTime: startTime,
+                endTime: endTime,
+                name: text
+            });
+
+            saveData();
+            input.value = '';
+            renderPlannerTasks();
+
+            const todayDay = new Date().getDay();
+            if (todayDay === currentSelectedPlanDay) {
+                initTodayLogs();
+                renderTodayView();
+            }
+        }
+
+        function deletePlannedTask(index) {
+            if (weeklyPlan[currentSelectedPlanDay]) {
+                weeklyPlan[currentSelectedPlanDay].splice(index, 1);
+                saveData();
+                renderPlannerTasks();
+            }
+        }
+
+        function switchView(viewName) {
+            document.getElementById('viewToday').style.display = viewName === 'today' ? 'block' : 'none';
+            document.getElementById('viewPlanner').style.display = viewName === 'planner' ? 'block' : 'none';
+            document.getElementById('viewReport').style.display = viewName === 'report' ? 'block' : 'none';
+
+            document.getElementById('tabToday').className = `tab-btn ${viewName === 'today' ? 'active' : ''}`;
+            document.getElementById('tabPlanner').className = `tab-btn ${viewName === 'planner' ? 'active' : ''}`;
+            document.getElementById('tabReport').className = `tab-btn ${viewName === 'report' ? 'active' : ''}`;
+
+            if (viewName === 'planner') renderPlannerTasks();
+            if (viewName === 'report') {
+                renderChart();
+                renderHistory();
+            }
+        }
+
+        function renderChart() {
+            const container = document.getElementById('chartBars');
+            const today = new Date();
+            const daysData = [];
+
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(today.getDate() - i);
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const dateNum = String(d.getDate()).padStart(2, '0');
+                const dateKey = `${y}-${m}-${dateNum}`;
+                const label = i === 0 ? '今天' : dayNames[d.getDay()].replace('星期', '週');
+
+                const dayLog = logs[dateKey] || [];
+                const doneCount = dayLog.filter(x => x.done).length;
+                const totalCount = dayLog.length;
+                const rate = totalCount === 0 ? 0 : Math.round((doneCount / totalCount) * 100);
+
+                daysData.push({ label, rate });
+            }
+
+            container.innerHTML = daysData.map(d => `
+                <div class="chart-bar-wrap">
+                    <div class="chart-val">${d.rate}%</div>
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="height: ${d.rate}%;"></div>
+                    </div>
+                    <div class="chart-label">${d.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderHistory() {
+            const selectedDate = document.getElementById('historyDate').value;
+            const list = logs[selectedDate] || [];
+            const container = document.getElementById('historyGrid');
+            const summary = document.getElementById('historySummary');
+
+            const doneCount = list.filter(x => x.done).length;
+            summary.innerText = list.length === 0 ? '該天沒有任何打卡任務' : `當天共有 ${list.length} 個目標，成功拍照手冊打卡 ${doneCount} 個`;
+
+            if (list.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:#94a3b8; padding:30px; font-size:12px;">此日期未有打卡紀錄</div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(item => `
+                <div class="history-card">
+                    ${item.startTime && item.endTime ? `<div style="font-size:10px; color:#d97706; font-weight:800; margin-bottom:2px;">⏰ ${item.startTime} - ${item.endTime}</div>` : ''}
+                    <div style="font-weight:700; font-size:13px; color:#1e293b;">${escapeHtml(item.name)}</div>
+                    <div style="font-size:11px; color:${item.done ? '#16a34a' : '#ef4444'}; font-weight:700; margin-top:2px;">
+                        ${item.done ? `✓ 已打卡 (${item.checkType === 'cross' ? '✖️ 非今日交' : '✔️ 今日交'})` : '✕ 未完成'}
+                    </div>
+                    ${item.done && item.photo ? `
+                        <div class="history-img-wrap" onclick="showModal('${escapeHtml(item.name)}', '${item.photo}', '${item.time}', '${item.checkType}')">
+                            <img src="${item.photo}">
+                        </div>
+                    ` : `
+                        <div style="height:70px; background:#f1f5f9; border-radius:8px; margin-top:6px; display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:11px;">
+                            無手冊照片
+                        </div>
+                    `}
+                </div>
+            `).join('');
+        }
+
+        function showModal(title, photo, time, checkType) {
+            const markText = checkType === 'cross' ? '【✖️ 非今日交】' : '【✔️ 今日要交】';
+            document.getElementById('modalTitle').innerText = `${markText} ${title}`;
+            document.getElementById('modalImage').src = photo;
+            document.getElementById('modalTime').innerText = time ? `拍照手冊時間：${time}` : '';
+            document.getElementById('imgModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('imgModal').classList.add('hidden');
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.innerText = str;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
